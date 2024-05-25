@@ -54,61 +54,11 @@ const createPostSchema = mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "user",
-  },
-});
-
-const postListSchema = mongoose.Schema({
-  title: {
-    type: String,
-    require: [true, "Please Enter a title"],
-  },
-  address: {
-    type: String,
-    require: [true, "Please Enter a address"],
-  },
-  latitude: {
-    type: String,
-    require: [true, "Please Enter a latitude"],
-  },
-  longitude: {
-    type: String,
-    require: [true, "Please Enter a longitude"],
-  },
-  propertyType: {
-    type: String,
-    enum: propertyTypeEnum,
-    require: [true, "Please Enter a property type"],
-  },
-  images: {
-    type: [String],
-    require: [true, "Please select an image"],
-  },
-  price: {
-    type: Number,
-    require: [true, "Please Enter price"],
-  },
-  bedroom: {
-    type: Number,
-    require: [true, "Please Enter number of bedroom"],
-  },
-  bathroom: {
-    type: Number,
-    require: [true, "Please Enter number of bathroom"],
-  },
-  squareFootage: {
-    type: String,
-    require: [true, "Please Enter squareFootage"],
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "user",
+    ref: "User",
   },
 });
 
 export const createPostModel = mongoose.model(
-  "createPostModel",
+  "Post",
   createPostSchema
 );
-export const postListModel = mongoose.model("postListModel", postListSchema);

@@ -4,18 +4,35 @@ import bcrypt from "bcryptjs";
 
 export const getUsers = async (req, res) => {
   try {
-    const userId = req.user.id;
-    if (!userId) {
+    const { page = 1, limit = 10, search } = req.query;
+
+    const user = req.user;
+    if (!user && user.role !== "SUPER_ADMIN") {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const user = await userModel.findById(userId);
-    if (!user || user.role !== "ADMIN") {
-      return res.status(401).json({ message: "Unauthorized" });
+    const query = {};
+    if (search) {
+      query.$or = [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
     }
 
-    const users = await userModel.find();
-    res.status(200).json(users);
+    const skip = (page - 1) * limit;
+
+    const users = await userModel.find(query).skip(skip).limit(parseInt(limit));
+
+    const totalItems = await userModel.countDocuments(query);
+    res
+      .status(200)
+      .json({
+        totalItems,
+        currentPage: parseInt(page),
+        limit: parseInt(limit),
+        users,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -32,7 +49,7 @@ export const getUser = async (req, res) => {
     }
 
     const user = await userModel.findById(userId);
-    if (!user || user.role !== "ADMIN") {
+    if (!user || user.role !== "SUPER_ADMIN") {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -72,7 +89,7 @@ export const updateUser = async (req, res) => {
     }
 
     const user = await userModel.findById(userId);
-    if (!user || user.role !== "ADMIN") {
+    if (!user || user.role !== "SUPER_ADMIN") {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -127,7 +144,7 @@ export const deleteUser = async (req, res) => {
     }
 
     const user = await userModel.findById(userId);
-    if (!user || user.role !== "ADMIN") {
+    if (!user || user.role !== "SUPER_ADMIN") {
       return res.status(401).json({ message: "Unauthorized" });
     }
 

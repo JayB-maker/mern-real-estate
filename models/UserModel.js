@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
+import { genderTypeEnum, roleTypeEnum } from "../utils/Enums.js";
 
 const userSchema = mongoose.Schema({
   firstName: {
     type: String,
-    require: [true, "Please enter first name"],
+    required: [true, "Please enter first name"],
   },
   lastName: {
     type: String,
@@ -11,6 +12,7 @@ const userSchema = mongoose.Schema({
   },
   gender: {
     type: String,
+    enum: genderTypeEnum,
     required: [true, "Please enter gender"],
   },
   image: {
@@ -19,6 +21,7 @@ const userSchema = mongoose.Schema({
   },
   role: {
     type: String,
+    enum: roleTypeEnum,
     required: [true, "Please select a role"],
   },
   phoneNumber: {
@@ -36,4 +39,4 @@ const userSchema = mongoose.Schema({
   },
 });
 
-export const userModel = mongoose.model("userModel", userSchema);
+export const userModel = mongoose.model("User", userSchema);

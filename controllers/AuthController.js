@@ -50,18 +50,6 @@ export const signup = async (req, res) => {
       phoneNumber,
       role,
     } = req.body;
-    if (
-      !email ||
-      !password ||
-      !firstName ||
-      !lastName ||
-      !gender ||
-      !image ||
-      !role ||
-      !phoneNumber
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
     const isUserExist = await userModel.findOne({ email: email });
     if (isUserExist) {
       return res.status(400).json({ message: "User already exist" });
@@ -96,6 +84,10 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({ message: messages });
+    }
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -264,7 +256,7 @@ export const deleteAccount = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    await user.remove();
+    await userModel.deleteOne({ id: userId });
     res.status(200).json({
       message: "Account deleted successfully",
     });

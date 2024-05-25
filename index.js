@@ -5,6 +5,8 @@ import connectDB from "./mongodb/ConnectDB.js";
 import authRoute from "./routes/AuthRoute.js";
 import userRoute from "./routes/UserRoute.js";
 import postRoute from "./routes/PostRoute.js";
+import enumRoute from "./routes/EnumRoute.js";
+import { uploadImage, uploadImages } from "./controllers/FileUploadController.js";
 
 dotenv.config();
 
@@ -21,6 +23,9 @@ app.get("/", async (req, res) => {
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
+app.use("/api/v1/enums", enumRoute);
+app.post("/api/v1/upload-files", uploadImages);
+app.post("/api/v1/upload-file", uploadImage);
 
 const startServer = () => {
   try {
